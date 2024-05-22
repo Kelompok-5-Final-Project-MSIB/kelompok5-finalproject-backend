@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,12 +18,14 @@ class AuthController extends Controller
             'password' => 'required|string|confirmed'
         ]);
         
-        $user = User::created([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
             'role' => 'user'
         ]);
+        
+        Cart::create(['id_user' => $user->id_user]);
         
         return response()->json([
             'status' => 'OK',

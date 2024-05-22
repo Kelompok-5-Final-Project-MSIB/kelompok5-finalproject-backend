@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,8 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('refresh-token', [AuthController::class, 'refreshToken']);
     Route::get('profile', [AuthController::class, 'profile']);
+    Route::get('/cart', [CartController::class, 'create']);
+    Route::post('/cart/add-product', [CartController::class, 'addProduct']);
 });
 
 Route::post('products', [ProductController::class, 'store']);
