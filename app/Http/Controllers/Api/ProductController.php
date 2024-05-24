@@ -6,24 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Services\ImageService;
 
 class ProductController extends Controller
 {
-    private function convertImage($product)
+    protected $imageService;
+
+    public function __construct(ImageService $imageService)
     {
-        // Decode the base64 image
-        $imageBase64 = $product->image;
-        $imageContent = base64_decode($imageBase64);
-
-        // Create a file in the public directory
-        $fileName = uniqid() . '.png';
-        $publicPath = public_path($fileName);
-        file_put_contents($publicPath, $imageContent);
-
-        // Generate a URL for the image
-        $product->image = asset($fileName);
-
-        return $product;
+        $this->imageService = $imageService;
     }
 
     public function store(Request $request)
@@ -32,7 +23,7 @@ class ProductController extends Controller
             'name_product' => 'required|string',
             'desc' => 'required|string',
             'brand' => 'required|string',
-            'image' => 'required|file|image|max:2048', // Ensure the image is a file and limit its size
+            'image' => 'required|file|image|max:3048', // Ensure the image is a file and limit its size
             'price' => 'required|integer',
             'discount' => 'required|numeric', // Use numeric instead of float
             'status' => 'required|in:available,sold out'
@@ -62,7 +53,7 @@ class ProductController extends Controller
             'status' => $request->status
         ]);
 
-        $product = $this->convertImage($product);
+        $product = $this->imageService->convertImage($product);
 
         return response()->json([
             'status' => 'OK',
@@ -77,7 +68,7 @@ class ProductController extends Controller
         $products = Product::paginate(5);
 
         $products->getCollection()->transform(function ($product) {
-            return $this->convertImage($product);
+            return $this->imageService->convertImage($product);
         });
 
         return response()->json([
@@ -100,7 +91,7 @@ class ProductController extends Controller
             ], 404);
         }
 
-        $product = $this->convertImage($product);
+        $product = $this->imageService->convertImage($product);
 
         return response()->json([
             'status' => 'OK',
@@ -193,7 +184,7 @@ class ProductController extends Controller
         }
 
         $products->each(function ($product) {
-            $product = $this->convertImage($product);
+            $product = $this->imageService->convertImage($product);
         });
 
         return response()->json([
@@ -219,7 +210,7 @@ class ProductController extends Controller
         }
 
         $products->getCollection()->transform(function ($product) {
-            return $this->convertImage($product);
+            return $this->imageService->convertImage($product);
         });
 
         return response()->json([
