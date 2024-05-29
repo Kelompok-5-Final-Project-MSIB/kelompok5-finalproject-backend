@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Middleware\EnsureUserRole;
+use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +27,9 @@ Route::group([
         Route::get('/cart', [CartController::class, 'getCartProducts']);
         Route::post('/cart', [CartController::class, 'addProduct']);
         Route::delete('/cart/{id_product}', [CartController::class, 'deleteProduct']);
+        Route::get('address', [AddressController::class, 'show']);
+        Route::post('address', [AddressController::class, 'store']);
+        Route::put('/address/{id}', [AddressController::class, 'update']);
     });
 });
 

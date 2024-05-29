@@ -14,6 +14,7 @@ class Address extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
+        'id_address',
         'id_user',
         'province',
         'city',
