@@ -163,6 +163,8 @@ class ProductController extends Controller
 
         $product->update($updateData);
 
+        $product = $this->imageService->convertImage($product);
+
         return response()->json([
             'status' => 'OK',
             'code' => 200,

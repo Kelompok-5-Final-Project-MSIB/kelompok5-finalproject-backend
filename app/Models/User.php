@@ -63,6 +63,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(Cart::class);
     }
 
+    public function addresses()
+    {
+        return $this->hasOne(Address::class);
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
