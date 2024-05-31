@@ -17,6 +17,9 @@ return new class extends Migration
             $table->text('desc');
             $table->string('brand', 50);
             $table->longText('image');
+            $table->longText('image2')->nullable();
+            $table->longText('image3')->nullable();
+            $table->integer('size');
             $table->integer('price');
             $table->float('discount');
             $table->enum('status', ['available', 'sold out'])->default('available');            

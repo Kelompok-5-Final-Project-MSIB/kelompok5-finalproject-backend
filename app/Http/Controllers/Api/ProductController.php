@@ -23,7 +23,10 @@ class ProductController extends Controller
             'name_product' => 'required|string',
             'desc' => 'required|string',
             'brand' => 'required|string',
-            'image' => 'required|file|image|max:3048', // Ensure the image is a file and limit its size
+            'image' => 'required|file|image|max:3048',
+            'image2' => 'nullable|file|image|max:3048',
+            'image3' => 'nullable|file|image|max:3048',
+            'size' => 'required|integer',
             'price' => 'required|integer',
             'discount' => 'required|numeric', // Use numeric instead of float
             'status' => 'required|in:available,sold out'
@@ -43,11 +46,17 @@ class ProductController extends Controller
         $imageContent = file_get_contents($image->getRealPath());
         $imageBase64 = base64_encode($imageContent);
 
+        $image2 = $request->hasFile('image2') ? base64_encode(file_get_contents($request->file('image2')->getRealPath())) : null;
+        $image3 = $request->hasFile('image3') ? base64_encode(file_get_contents($request->file('image3')->getRealPath())) : null;
+
         $product = Product::create([
             'name_product' => $request->name_product,
             'desc' => $request->desc,
             'brand' => $request->brand,
             'image' => $imageBase64,
+            'image2' => $image2,
+            'image3' => $image3,
+            'size' => $request->size,
             'price' => $request->price,
             'discount' => $request->discount,
             'status' => $request->status
@@ -139,6 +148,7 @@ class ProductController extends Controller
             'desc' => 'sometimes|required|string',
             'brand' => 'sometimes|required|string',
             'image' => 'sometimes|file|image|max:2048',
+            'size' => 'sometimes|required|integer',
             'price' => 'sometimes|required|integer',
             'discount' => 'sometimes|required|numeric',
             'status' => 'sometimes|required|in:available,sold out'
@@ -153,7 +163,7 @@ class ProductController extends Controller
             ], 400);
         }
 
-        $updateData = $request->only(['name_product', 'desc', 'brand', 'price', 'discount', 'status']);
+        $updateData = $request->only(['name_product', 'desc', 'brand', 'size', 'price', 'discount', 'status']);
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');

@@ -13,30 +13,35 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
-Route::get('allUsers', [AuthController::class, 'allUser']);
+Route::post('register', [AuthController::class, 'register'])->name('register');
+Route::post('login', [AuthController::class, 'login'])->name('login');
+Route::get('allUsers', [AuthController::class, 'allUser'])->name('allUsers');
 
 Route::group([
     'middleware' => 'auth:api'
 ], function() {
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('refresh-token', [AuthController::class, 'refreshToken']);
-    Route::get('profile', [AuthController::class, 'profile']);
+    // Auth
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('refresh-token', [AuthController::class, 'refreshToken'])->name('refresh');
+    Route::get('profile', [AuthController::class, 'profile'])->name('profile');
     Route::group(['middleware' => EnsureUserRole::class], function() {
-        Route::get('/cart', [CartController::class, 'getCartProducts']);
-        Route::post('/cart', [CartController::class, 'addProduct']);
-        Route::delete('/cart/{id_product}', [CartController::class, 'deleteProduct']);
-        Route::get('address', [AddressController::class, 'show']);
-        Route::post('address', [AddressController::class, 'store']);
-        Route::put('/address/{id}', [AddressController::class, 'update']);
+        // Cart
+        Route::get('/cart', [CartController::class, 'getCartProducts'])->name('cart.show');
+        Route::post('/cart', [CartController::class, 'addProduct'])->name('cart.addProduct');
+        Route::delete('/cart/{id_product}', [CartController::class, 'deleteProduct'])->name('cart.deleteProduct');
+
+        // Address
+        Route::get('address', [AddressController::class, 'show'])->name('address.show');
+        Route::post('address', [AddressController::class, 'store'])->name('address.store');
+        Route::put('/address/{id}', [AddressController::class, 'update'])->name('address.update');
     });
 });
 
-Route::post('products', [ProductController::class, 'store']);
-Route::get('products', [ProductController::class, 'getProducts']);
-Route::get('products', [ProductController::class, 'searchProducts']);
-Route::get('products/{id}', [ProductController::class, 'getProductById']);
-Route::get('products/brand/{brand}', [ProductController::class, 'getProductByBrand']);
-Route::post('products/{id}', [ProductController::class, 'update']);
-Route::delete('products/{id}', [ProductController::class, 'destroy']);
+// Product
+Route::post('products', [ProductController::class, 'store'])->name('products.store');
+Route::get('products', [ProductController::class, 'getProducts'])->name('products.show');
+Route::get('products', [ProductController::class, 'searchProducts'])->name('products.search');
+Route::get('products/{id}', [ProductController::class, 'getProductById'])->name('products.show');
+Route::get('products/brand/{brand}', [ProductController::class, 'getProductByBrand'])->name('products.show');
+Route::post('products/{id}', [ProductController::class, 'update'])->name('products.update');
+Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.delete');

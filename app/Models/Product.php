@@ -19,6 +19,9 @@ class Product extends Model
         'desc',
         'brand',
         'image',
+        'image2',
+        'image3',
+        'size',
         'price',
         'discount',
         'status'
