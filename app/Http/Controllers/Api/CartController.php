@@ -107,20 +107,25 @@ class CartController extends Controller
         $products = $cartDetails->map(function ($cartDetail) {
             $product = Product::find($cartDetail->id_product);
             $product = $this->imageService->convertImage($product);
+            $discountedPrice = $product->price - ($product->price * $product->discount / 100);
             return [
                 'id_product' => $product->id_product,
                 'name_product' => $product->name_product,
                 'price' => $product->price,
+                'discount' => $product->discount,
+                'discounted_price' => $discountedPrice,
                 'desc' => $product->desc,
                 'image' => $product->image,
             ];
         });
 
+        $totalPrice = $products->sum('discounted_price');
+
         return response()->json([
             'status' => 'success',
             'data' => [
                 'data' => $products,
-                'total' => $products->sum('price')
+                'total' => $totalPrice
             ]
         ]);
     }

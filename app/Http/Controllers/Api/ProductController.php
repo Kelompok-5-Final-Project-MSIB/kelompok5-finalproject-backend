@@ -72,9 +72,35 @@ class ProductController extends Controller
         ]);
     }
 
-    public function getProducts()
+    public function getProducts(Request $request)
     {
-        $products = Product::paginate(5);
+        $brand = $request->query('brand');
+        $id = $request->query('id');
+        $searchTerm = $request->input('search');
+
+        $query = Product::query();
+
+        if ($brand) {
+            $query->where('brand', $brand);
+        }
+
+        if ($id) {
+            $query->where('id_product', $id);
+        }
+
+        if ($searchTerm) {
+            $query->where('name_product', 'like', '%' . $searchTerm . '%');
+        }
+
+        $products = $query->paginate(6);
+
+        if ($products->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'No products found!'
+            ], 404);
+        }
 
         $products->getCollection()->transform(function ($product) {
             return $this->imageService->convertImage($product);
@@ -85,28 +111,6 @@ class ProductController extends Controller
             'code' => 200,
             'message' => 'Products retrieved successfully!',
             'data' => $products
-        ]);
-    }
-
-    public function getProductById($id)
-    {
-        $product = Product::find($id);
-
-        if (!$product) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'Product not found!'
-            ], 404);
-        }
-
-        $product = $this->imageService->convertImage($product);
-
-        return response()->json([
-            'status' => 'OK',
-            'code' => 200,
-            'message' => 'Product retrieved successfully!',
-            'data' => $product
         ]);
     }
 
@@ -180,56 +184,6 @@ class ProductController extends Controller
             'code' => 200,
             'message' => 'Product updated successfully!',
             'data' => $product
-        ]);
-    }
-
-    public function getProductByBrand($brand)
-    {
-        $products = Product::where('brand', $brand)->get();
-
-        if ($products->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'No products found for this brand!'
-            ], 404);
-        }
-
-        $products->each(function ($product) {
-            $product = $this->imageService->convertImage($product);
-        });
-
-        return response()->json([
-            'status' => 'OK',
-            'code' => 200,
-            'message' => 'Products retrieved successfully!',
-            'data' => $products
-        ]);
-    }
-
-    public function searchProducts(Request $request)
-    {
-        $searchTerm = $request->input('search');
-
-        $products = Product::where('name_product', 'like', '%' . $searchTerm . '%')->paginate(5);
-
-        if ($products->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'No products found!'
-            ], 404);
-        }
-
-        $products->getCollection()->transform(function ($product) {
-            return $this->imageService->convertImage($product);
-        });
-
-        return response()->json([
-            'status' => 'OK',
-            'code' => 200,
-            'message' => 'Products retrieved successfully!',
-            'data' => $products
-        ]);
+        ], 200);
     }
 }

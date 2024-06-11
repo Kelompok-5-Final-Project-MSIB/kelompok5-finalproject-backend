@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -31,6 +32,36 @@ class AuthController extends Controller
             'status' => 'OK',
             'code' => 200,
             'message' => 'User registered successfully!',
+            'data' => $user
+        ]);
+    }
+
+    public function addAdmin(Request $request)
+    {
+        $validasi = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|confirmed'
+        ]);
+
+        if($validasi->fails()) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $request->errors()
+            ], 400);
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            'role' => 'admin'
+        ]);
+
+        return response()->json([
+            'status' => 'OK',
+            'code' => 200,
+            'message' => 'Admin added successfully!',
             'data' => $user
         ]);
     }

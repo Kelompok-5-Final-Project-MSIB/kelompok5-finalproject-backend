@@ -19,12 +19,14 @@ Route::get('allUsers', [AuthController::class, 'allUser'])->name('allUsers');
 
 Route::group([
     'middleware' => 'auth:api'
-], function() {
+], function () {
     // Auth
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('refresh-token', [AuthController::class, 'refreshToken'])->name('refresh');
     Route::get('profile', [AuthController::class, 'profile'])->name('profile');
-    Route::group(['middleware' => EnsureUserRole::class], function() {
+    Route::get('products', [ProductController::class, 'getProducts'])->name('products.show');
+    
+    Route::group(['middleware' => EnsureUserRole::class], function () {
         // Cart
         Route::get('/cart', [CartController::class, 'getCartProducts'])->name('cart.show');
         Route::post('/cart', [CartController::class, 'addProduct'])->name('cart.addProduct');
@@ -35,13 +37,19 @@ Route::group([
         Route::post('address', [AddressController::class, 'store'])->name('address.store');
         Route::put('/address/{id}', [AddressController::class, 'update'])->name('address.update');
     });
+
+    Route::group(['middleware' => 'admin'], function () {
+        // Auth
+        Route::post('addAdmin', [AuthController::class, 'addAdmin'])->name('addAdmin');
+
+        // Product
+        Route::post('products', [ProductController::class, 'store'])->name('products.store');        
+        Route::post('products/{id}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.delete');
+    });
 });
 
-// Product
-Route::post('products', [ProductController::class, 'store'])->name('products.store');
-Route::get('products', [ProductController::class, 'getProducts'])->name('products.show');
-Route::get('products', [ProductController::class, 'searchProducts'])->name('products.search');
-Route::get('products/{id}', [ProductController::class, 'getProductById'])->name('products.show');
-Route::get('products/brand/{brand}', [ProductController::class, 'getProductByBrand'])->name('products.show');
-Route::post('products/{id}', [ProductController::class, 'update'])->name('products.update');
-Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.delete');
+
+
+Route::get('location/{type}', [AddressController::class, 'getLocation'])->name('city.show');
+Route::get('province', [AddressController::class, 'getProvinces'])->name('province.show');

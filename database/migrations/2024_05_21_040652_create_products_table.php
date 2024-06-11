@@ -21,7 +21,7 @@ return new class extends Migration
             $table->longText('image3')->nullable();
             $table->integer('size');
             $table->integer('price');
-            $table->float('discount');
+            $table->integer('discount');
             $table->enum('status', ['available', 'sold out'])->default('available');            
             $table->timestamps();
         });
