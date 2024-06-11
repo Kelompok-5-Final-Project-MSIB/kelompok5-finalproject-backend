@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Services\ImageService;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -199,5 +200,29 @@ class ProductController extends Controller
             'message' => 'Product updated successfully!',
             'data' => $product
         ], 200);
+    }
+
+    public function getBrandProductCounts()
+    {
+        $brandCount = Product::distinct('brand')->count();
+
+        if ($brandCount == 0) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'No brands found!',
+            ], 404);
+        }
+
+        $brands = Product::select('brand', DB::raw('count(*) as total'))
+            ->groupBy('brand')
+            ->get();
+
+        return response()->json([
+            'status' => 'OK',
+            'code' => 200,
+            'message' => 'Brand product counts retrieved successfully!',
+            'data' => $brands
+        ]);
     }
 }
