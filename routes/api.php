@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Middleware\EnsureAdminRole;
 use App\Http\Middleware\EnsureUserRole;
 use App\Models\Address;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ Route::group([
         Route::put('/address/{id}', [AddressController::class, 'update'])->name('address.update');
     });
 
-    Route::group(['middleware' => 'admin'], function () {
+    Route::group(['middleware' => EnsureAdminRole::class], function () {
         // Auth
         Route::post('addAdmin', [AuthController::class, 'addAdmin'])->name('addAdmin');
 

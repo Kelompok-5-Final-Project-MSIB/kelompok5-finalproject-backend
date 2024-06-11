@@ -148,14 +148,16 @@ class ProductController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name_product' => 'sometimes|required|string',
-            'desc' => 'sometimes|required|string',
-            'brand' => 'sometimes|required|string',
-            'image' => 'sometimes|file|image|max:2048',
-            'size' => 'sometimes|required|integer',
-            'price' => 'sometimes|required|integer',
-            'discount' => 'sometimes|required|numeric',
-            'status' => 'sometimes|required|in:available,sold out'
+            'name_product' => 'sometimes|string',
+            'desc' => 'sometimes|string',
+            'brand' => 'sometimes|string',
+            'image' => 'sometimes|file|image|max:3048',
+            'image2' => 'sometimes|file|image|max:3048',
+            'image3' => 'sometimes|file|image|max:3048',
+            'size' => 'sometimes|integer',
+            'price' => 'sometimes|integer',
+            'discount' => 'sometimes|numeric',
+            'status' => 'sometimes|in:available,sold out'
         ]);
 
         if ($validator->fails()) {
@@ -173,6 +175,18 @@ class ProductController extends Controller
             $image = $request->file('image');
             $imageContent = file_get_contents($image->getRealPath());
             $updateData['image'] = base64_encode($imageContent);
+        }
+
+        if ($request->hasFile('image2')) {
+            $image2 = $request->file('image2');
+            $image2Content = file_get_contents($image2->getRealPath());
+            $updateData['image2'] = base64_encode($image2Content);
+        }
+
+        if ($request->hasFile('image3')) {
+            $image3 = $request->file('image3');
+            $image3Content = file_get_contents($image3->getRealPath());
+            $updateData['image3'] = base64_encode($image3Content);
         }
 
         $product->update($updateData);
