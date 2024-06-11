@@ -43,7 +43,7 @@ class CartController extends Controller
         ]);
     }
 
-    public function addProduct(Request $request)
+    public function addProduct($id_product)
     {
         $user = Auth::user();
 
@@ -57,14 +57,9 @@ class CartController extends Controller
             ], 404);
         }
 
-        // Validate the request
-        $request->validate([
-            'id_product' => 'required',
-        ]);
-
         // Check if the product is already in the cart
         $productExists = CartDetails::where('id_cart', $cart->id_cart)
-            ->where('id_product', $request->id_product)
+            ->where('id_product', $id_product)
             ->exists();
 
         if ($productExists) {
@@ -77,7 +72,7 @@ class CartController extends Controller
         // Add the product to the cart
         $cartDetail = CartDetails::create([
             'id_cart' => $cart->id_cart,
-            'id_product' => $request->id_product,
+            'id_product' => $id_product,
         ]);
 
         return response()->json([

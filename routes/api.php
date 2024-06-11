@@ -31,7 +31,7 @@ Route::group([
     Route::group(['middleware' => EnsureUserRole::class], function () {
         // Cart
         Route::get('/cart', [CartController::class, 'getCartProducts'])->name('cart.show');
-        Route::post('/cart', [CartController::class, 'addProduct'])->name('cart.addProduct');
+        Route::post('/cart/{id_product}', [CartController::class, 'addProduct'])->name('cart.addProduct');
         Route::delete('/cart/{id_product}', [CartController::class, 'deleteProduct'])->name('cart.deleteProduct');
 
         // Address
