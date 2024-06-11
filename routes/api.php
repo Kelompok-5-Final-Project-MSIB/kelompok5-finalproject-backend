@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\TransactionController;
 use App\Http\Middleware\EnsureAdminRole;
 use App\Http\Middleware\EnsureUserRole;
 use App\Models\Address;
@@ -33,6 +34,8 @@ Route::group([
         Route::get('/cart', [CartController::class, 'getCartProducts'])->name('cart.show');
         Route::post('/cart/{id_product}', [CartController::class, 'addProduct'])->name('cart.addProduct');
         Route::delete('/cart/{id_product}', [CartController::class, 'deleteProduct'])->name('cart.deleteProduct');
+
+        Route::post('payment', [TransactionController::class, 'payment'])->name('payment');
 
         // Address
         Route::get('address', [AddressController::class, 'show'])->name('address.show');
