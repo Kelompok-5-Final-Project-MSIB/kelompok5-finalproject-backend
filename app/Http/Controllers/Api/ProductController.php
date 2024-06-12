@@ -136,6 +136,28 @@ class ProductController extends Controller
         ]);
     }
 
+    public function getProductById($id)
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json([
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Product not found!'
+            ], 404);
+        }
+
+        $product = $this->imageService->convertImage($product);
+
+        return response()->json([
+            'status' => 'OK',
+            'code' => 200,
+            'message' => 'Product retrieved successfully!',
+            'data' => $product
+        ]);
+    }
+
     public function update(Request $request, $id)
     {
         $product = Product::find($id);
