@@ -39,6 +39,7 @@ Route::group([
         Route::post('payment', [TransactionController::class, 'payment'])->name('payment');
 
         // Address
+        Route::get('location/{type}', [AddressController::class, 'getLocation'])->name('city.show');
         Route::get('address', [AddressController::class, 'show'])->name('address.show');
         Route::post('address', [AddressController::class, 'store'])->name('address.store');
         Route::put('/address/{id}', [AddressController::class, 'update'])->name('address.update');
@@ -57,5 +58,5 @@ Route::group([
 
 
 
-Route::get('location/{type}', [AddressController::class, 'getLocation'])->name('city.show');
+
 Route::get('province', [AddressController::class, 'getProvinces'])->name('province.show');
