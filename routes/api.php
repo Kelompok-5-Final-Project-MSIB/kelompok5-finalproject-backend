@@ -28,7 +28,7 @@ Route::group([
     Route::get('profile', [AuthController::class, 'profile'])->name('profile');
     Route::get('products', [ProductController::class, 'getProducts'])->name('products.show');
     Route::get('products/{id}', [ProductController::class, 'getProductById'])->name('products.show');
-    Route::get('products/brand', [ProductController::class, 'getBrandProductCounts'])->name('products.brand');
+    Route::get('brands', [ProductController::class, 'getBrandProductCounts'])->name('products.brand');
     
     Route::group(['middleware' => EnsureUserRole::class], function () {
         // Cart

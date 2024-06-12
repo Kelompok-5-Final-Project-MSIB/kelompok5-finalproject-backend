@@ -224,6 +224,7 @@ class ProductController extends Controller
         ], 200);
     }
 
+    
     public function getBrandProductCounts()
     {
         $brandCount = Product::distinct('brand')->count();
