@@ -25,12 +25,17 @@ class TransactionController extends Controller
     public function payment()
     {
         $user = Auth::user();
-
+        
+        $address = $user->address;
+        
+        if (!$address) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Address not found'
+            ], 404);
+        }
+        
         $cartController = app(CartController::class);
-        $addressController = app(AddressController::class);
-
-        $addressData = $addressController->show()->getData();
-
         $cartProducts = $cartController->getCartProducts()->getData();
 
         if ($cartProducts->status == 'error') {
@@ -38,7 +43,7 @@ class TransactionController extends Controller
         }
 
         $item_details = [];
-        $total = $cartProducts->data->total;
+        $total = $cartProducts->data->total + $address->shipping_cost;
 
         foreach ($cartProducts->data->data as $product) {
             $item_detail = [
@@ -71,6 +76,7 @@ class TransactionController extends Controller
             ],
             'item_details' => $item_details,
         ];
+
 
         $snapToken = Snap::getSnapToken($params);
         $redirectUrl = Snap::createTransaction($params)->redirect_url;
