@@ -51,11 +51,13 @@ class AuthController extends Controller
             ], 400);
         }
 
+        $prefix = 'admin';
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
-            'role' => 'admin'
+            'role' => $prefix
         ]);
 
         return response()->json([
