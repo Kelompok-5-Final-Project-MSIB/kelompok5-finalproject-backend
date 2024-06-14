@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Midtrans\Config;
+use Midtrans\Notification;
 use Midtrans\Snap;
 
 class TransactionController extends Controller
@@ -26,6 +27,9 @@ class TransactionController extends Controller
         $user = Auth::user();
 
         $cartController = app(CartController::class);
+        $addressController = app(AddressController::class);
+
+        $addressData = $addressController->show()->getData();
 
         $cartProducts = $cartController->getCartProducts()->getData();
 
@@ -34,7 +38,6 @@ class TransactionController extends Controller
         }
 
         $item_details = [];
-        
         $total = $cartProducts->data->total;
 
         foreach ($cartProducts->data->data as $product) {
@@ -45,7 +48,7 @@ class TransactionController extends Controller
                 'quantity' => 1, // You may need to adjust this based on your application
             ];
 
-            
+
             array_push($item_details, $item_detail);
         }
 
@@ -77,7 +80,40 @@ class TransactionController extends Controller
             'code' => 200,
             'message' => 'Transaction created successfully',
             'data' => $params,
-            'snap_token' => $snapToken,            
+            'snap_token' => $snapToken,
+            'redirect_url' => $redirectUrl,
+        ]);
+    }
+
+    public function handleNotification()
+    {
+        $notif = new Notification();
+
+        $transaction = $notif->transaction_status;
+        $order_id = $notif->order_id;
+
+        $transactionData = Transaction::where('order_id', $order_id)->first();
+
+        if (!$transactionData) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Transaction not found'
+            ], 404);
+        }
+
+        if ($transaction == 'capture' || $transaction == 'settlement') {
+            $transactionData->status = 'success';
+        } else if ($transaction == 'pending') {
+            $transactionData->status = 'pending';
+        } else if ($transaction == 'deny' || $transaction == 'cancel' || $transaction == 'expire') {
+            $transactionData->status = 'failure';
+        }
+
+        $transactionData->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Transaction status updated'
         ]);
     }
 }

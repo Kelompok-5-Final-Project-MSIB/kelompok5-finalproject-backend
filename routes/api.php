@@ -37,6 +37,7 @@ Route::group([
         Route::delete('/cart/{id_product}', [CartController::class, 'deleteProduct'])->name('cart.deleteProduct');
 
         Route::post('payment', [TransactionController::class, 'payment'])->name('payment');
+        Route::get('payment/notification/{order_id}', [TransactionController::class, 'checkTransactionStatus'])->name('notification');
 
         // Address
         Route::get('location/{type}', [AddressController::class, 'getLocation'])->name('city.show');
