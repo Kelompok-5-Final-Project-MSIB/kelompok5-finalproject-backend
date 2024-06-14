@@ -15,6 +15,12 @@ class AddressController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        if ($user->address) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User already has an address'
+            ], 400);
+        }
 
         $validator = Validator::make($request->all(), [
             'id_province' => 'required|string',
