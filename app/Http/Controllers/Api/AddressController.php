@@ -154,7 +154,7 @@ class AddressController extends Controller
     {
         $user = Auth::user();
 
-        $addresses = Address::where('id_user', $user->id_user)->get();
+        $addresses = Address::where('id_user', $user->id_user)->first();
 
         return response()->json([
             'status' => 'OK',
