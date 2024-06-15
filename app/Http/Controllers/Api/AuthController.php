@@ -141,9 +141,25 @@ class AuthController extends Controller
         ]);
     }
 
-    public function allUser()
+    public function allUser(Request  $request)
     {
-        $users = User::all();
+        $role = $request->query('role');
+
+        $users = User::query();
+        
+        if ($role) {
+            $users->where('role', $role);
+        }
+
+        $users = $users->get();
+
+        if ($users->isEmpty()) {
+            return response()->json([
+                'status' => 'Error',
+                'code' => 404,
+                'message' => 'Users data not found!',
+            ], 404);
+        }
 
         return response()->json([
             'status' => 'OK',
