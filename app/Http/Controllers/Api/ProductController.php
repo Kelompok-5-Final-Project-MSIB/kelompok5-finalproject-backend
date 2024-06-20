@@ -103,7 +103,7 @@ class ProductController extends Controller
             ], 404);
         }
 
-        $products->getCollection()->transform(function ($product) {
+        $products->getCollection( )->transform(function ($product) {
             return $this->imageService->convertImage($product);
         });
 

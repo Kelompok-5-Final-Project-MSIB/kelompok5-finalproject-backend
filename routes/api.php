@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Middleware\EnsureAdminRole;
 use App\Http\Middleware\EnsureUserRole;
 use App\Models\Address;
@@ -29,6 +30,13 @@ Route::group([
     Route::get('products', [ProductController::class, 'getProducts'])->name('products.show');
     Route::get('products/{id}', [ProductController::class, 'getProductById'])->name('products.show');
     Route::get('brands', [ProductController::class, 'getBrandProductCounts'])->name('products.brand');
+
+    // profile 
+    Route::get('profiles', [ProfileController::class, 'index'])->name('profiles.index');
+    Route::get('profiles/{id}', [ProfileController::class, 'show'])->name('profiles.show');
+    Route::post('profiles', [ProfileController::class, 'store'])->name('profiles.store');
+    Route::put('profiles/{id}', [ProfileController::class, 'update'])->name('profiles.update');
+    Route::delete('profiles/{id}', [ProfileController::class, 'destroy'])->name('profiles.destroy');
     
     Route::group(['middleware' => EnsureUserRole::class], function () {
         // Cart
