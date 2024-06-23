@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', [AuthController::class, 'register'])->name('register');
 Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::get('allUsers', [AuthController::class, 'allUser'])->name('allUsers');
+Route::get('callback/{order_id}', [TransactionController::class, 'callback'])->name('callback');
+Route::get('callback/product/{order_id}', [TransactionController::class, 'callbackByProduct'])->name('callback.product');
 
 Route::group([
     'middleware' => 'auth:api'
@@ -45,7 +47,8 @@ Route::group([
         Route::delete('/cart/{id_product}', [CartController::class, 'deleteProduct'])->name('cart.deleteProduct');
 
         Route::post('payment', [TransactionController::class, 'payment'])->name('payment');
-        Route::get('payment/notification/{order_id}', [TransactionController::class, 'checkTransactionStatus'])->name('notification');
+        Route::post('payment/product/{id_product}', [TransactionController::class, 'paymentByIdProduct'])->name('payment.product');
+        
 
         // Address
         Route::get('location/{type}', [AddressController::class, 'getLocation'])->name('city.show');

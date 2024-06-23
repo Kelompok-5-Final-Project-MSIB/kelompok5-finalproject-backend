@@ -57,6 +57,15 @@ class CartController extends Controller
             ], 404);
         }
 
+        $productSold = Product::find($id_product);
+
+        if ($productSold->status == 'sold out') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Product is sold out'
+            ], 400);
+        }
+
         // Check if the product is already in the cart
         $productExists = CartDetails::where('id_cart', $cart->id_cart)
             ->where('id_product', $id_product)

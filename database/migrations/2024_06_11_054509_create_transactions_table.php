@@ -12,7 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id_transaction')->primary();
+            $table->string('order_id');
+            $table->uuid('id_user');
+            $table->integer('gross_amount');
+            $table->enum('transaction_status', ['capture', 'settlement', 'pending', 'deny', 'cancel', 'expire', 'refund']);
+            $table->string('fraud_status');
             $table->timestamps();
         });
     }
