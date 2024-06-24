@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\File;
 
 class ProductFactory extends Factory
 {
@@ -25,7 +26,7 @@ class ProductFactory extends Factory
             'name_product' => $this->faker->name,
             'desc' => $this->faker->sentence,
             'brand' => $this->faker->randomElement(['adidas', 'nike', 'puma', 'reebok', 'vans', 'converse', 'fila', 'new balance', 'asics', 'skechers']),
-            'image' => $this->getImageBase64('image.png'),
+            'image' => $this->getImageBase64(),
             'size' => $this->faker->numberBetween(35, 45),
             'price' => $this->faker->numberBetween(100000, 500000),
             'discount' => $this->faker->numberBetween(0, 50),
@@ -39,13 +40,17 @@ class ProductFactory extends Factory
      * @param string $filename
      * @return string|null
      */
-    private function getImageBase64($filename)
+    private function getImageBase64()
     {
-        $path = public_path('image/seeder/' . $filename);
-        if (file_exists($path)) {
-            $image = file_get_contents($path);
+        $imageDir = public_path('image/seeder');
+        $files = File::files($imageDir);
+
+        if (!empty($files)) {
+            $randomFile = $this->faker->randomElement($files);
+            $image = file_get_contents($randomFile->getPathname());
             return base64_encode($image);
         }
+
         return null;
     }
 }
