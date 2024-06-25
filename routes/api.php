@@ -13,14 +13,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
-
+    //     return $request->user();
+    // })->middleware('auth:sanctum');
+    
 Route::post('register', [AuthController::class, 'register'])->name('register');
 Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::get('allUsers', [AuthController::class, 'allUser'])->name('allUsers');
 Route::get('callback/{order_id}', [TransactionController::class, 'callback'])->name('callback');
 Route::get('callback/product/{order_id}', [TransactionController::class, 'callbackByProduct'])->name('callback.product');
+Route::get('payment', [TransactionController::class, 'index'])->name('payment');
 
 Route::group([
     'middleware' => 'auth:api'

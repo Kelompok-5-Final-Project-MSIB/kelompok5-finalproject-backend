@@ -25,6 +25,22 @@ class TransactionController extends Controller
         Config::$is3ds = env('MIDTRANS_IS_3DS');
     }
 
+    public function index()
+    {
+        $transaction = Transaction::all();
+        if(!$transaction) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Transaction not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $transaction
+        ]);
+    }
+
     public function payment()
     {
         $user = Auth::user();

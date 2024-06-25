@@ -11,6 +11,9 @@ class Transaction extends Model
 
     protected $table = 'transactions';
     protected $primaryKey = 'id_transaction';
+    public $incrementing = false;
+    protected $keyType = 'string';
+    
     protected $fillable = [
         'id_transaction',
         'order_id',
