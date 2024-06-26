@@ -49,6 +49,7 @@ Route::group([
 
         Route::post('payment', [TransactionController::class, 'payment'])->name('payment');
         Route::post('payment/product/{id_product}', [TransactionController::class, 'paymentByIdProduct'])->name('payment.product');
+        Route::get('payment-user', [TransactionController::class, 'showByUser'])->name('paymentUser');
         
 
         // Address

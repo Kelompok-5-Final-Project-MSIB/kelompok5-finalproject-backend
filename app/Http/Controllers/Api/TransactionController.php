@@ -41,6 +41,22 @@ class TransactionController extends Controller
         ]);
     }
 
+    public function showByUser()
+    {
+        $user = Auth::user();
+        $transaction = Transaction::where('id_user', $user->id_user)->get();
+        if(!$transaction) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Transaction not found'
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'data' => $transaction
+        ]);
+    }
+
     public function payment()
     {
         $user = Auth::user();
