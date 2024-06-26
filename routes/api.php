@@ -21,6 +21,7 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::get('allUsers', [AuthController::class, 'allUser'])->name('allUsers');
 Route::get('callback/{order_id}', [TransactionController::class, 'callback'])->name('callback');
 Route::get('callback/product/{order_id}', [TransactionController::class, 'callbackByProduct'])->name('callback.product');
+Route::post('midtrans-callback', [TransactionController::class, 'callbackMidtrans'])->name('midtrans-callback');
 Route::get('payment', [TransactionController::class, 'index'])->name('payment');
 
 Route::group([
@@ -58,7 +59,7 @@ Route::group([
         Route::post('address', [AddressController::class, 'store'])->name('address.store');
         Route::put('/address/{id}', [AddressController::class, 'update'])->name('address.update');
     });
-
+ 
     Route::group(['middleware' => EnsureAdminRole::class], function () {
         // Auth
         Route::post('addAdmin', [AuthController::class, 'addAdmin'])->name('addAdmin');

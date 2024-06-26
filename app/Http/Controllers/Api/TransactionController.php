@@ -263,4 +263,50 @@ class TransactionController extends Controller
 
         return response()->json($body);
     }
+
+    public function callbackMidtrans (Request $request)
+    {
+        $serverKey = env('MIDTRANS_SERVER_KEY');
+        $hashed = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+        if ($hashed == $request->signature_key){
+            if($request->transaction_status == 'settlement'){
+                $transaction = Transaction::where('order_id', $request->order_id)->first();
+                $transaction->transaction_status = $request->transaction_status;
+                $transaction->save();
+    
+                $cart = Cart::where('id_user', $transaction->id_user)->first();
+                $cartDetails = CartDetails::where('id_cart', $cart->id_cart)->get();
+                foreach ($cartDetails as $cartDetail) {
+                    $product = Product::find($cartDetail->id_product);
+                    $product->status = 'sold out';
+                    $product->save();
+    
+                    $cartDetail->delete();
+                }
+    
+                $product->status = 'sold out';
+                $product->save();
+            }
+            else if ($request->transaction_status == 'capture'){
+                $transaction = Transaction::where('order_id', $request->order_id)->first();
+                $transaction->transaction_status = $request->transaction_status;
+                $transaction->save();
+            }
+            else if ($request->transaction_status == 'cancel'){
+                $transaction = Transaction::where('order_id', $request->order_id)->first();
+                $transaction->transaction_status = $request->transaction_status;
+                $transaction->save();
+            }
+            else if ($request->transaction_status == 'deny'){
+                $transaction = Transaction::where('order_id', $request->order_id)->first();
+                $transaction->transaction_status = $request->transaction_status;
+                $transaction->save();
+            }
+            else if ($request->transaction_status == 'pending'){
+                $transaction = Transaction::where('order_id', $request->order_id)->first();
+                $transaction->transaction_status = $request->transaction_status;
+                $transaction->save();
+            }
+        }
+    }
 }
